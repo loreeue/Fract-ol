@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   events.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:39:23 by loruzqui          #+#    #+#             */
-/*   Updated: 2024/12/19 11:39:25 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:34:21 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-int	close_handler(t_fractal *fractal)
+int	ft_close_handler(t_fractal *fractal)
 {
 	mlx_destroy_image(fractal->mlx_connection,
 		fractal->img.img_ptr);
@@ -23,10 +23,10 @@ int	close_handler(t_fractal *fractal)
 	exit(EXIT_SUCCESS);
 }
 
-int	key_handler(int keysym, t_fractal *fractal)
+int	ft_key_handler(int keysym, t_fractal *fractal)
 {
 	if (keysym == XK_Escape)
-		close_handler(fractal);
+		ft_close_handler(fractal);
 	if (keysym == XK_Left)
 		fractal->shift_x -= (0.5 * fractal->zoom);
 	else if (keysym == XK_Right)
@@ -39,35 +39,50 @@ int	key_handler(int keysym, t_fractal *fractal)
 		fractal->iterations_definition += 10;
 	else if (keysym == XK_minus)
 		fractal->iterations_definition -= 10;
-	fractal_render(fractal);
+	else if (keysym == XK_space)
+		fractal->color_shift = (fractal->color_shift + 1) % 3;
+	ft_fractal_render(fractal);
 	return (0);
 }
 
-int	mouse_handler(int button, int x, int y, t_fractal *fractal)
+int	ft_mouse_handler(int button, int x, int y, t_fractal *fractal)
 {
-	if (button == Button5)
-	{
-		fractal->zoom *= 0.95;
-	}
-	else if (button == Button4)
-	{
-		fractal->zoom *= 1.05;
-	}
-	fractal_render(fractal);
-	(void)x;
-	(void)y;
-	return (0);
-}
+	double	mouse_re;
+	double	mouse_im;
 
-int	julia_track(int x, int y, t_fractal *fractal)
-{
-	if (ft_strncmp(fractal->name, "julia", 5) == 0)
-	{
-		fractal->julia_x = (map(x, -2, +2, WIDTH) * fractal->zoom)
-			+ fractal->shift_x;
-		fractal->julia_y = (map(y, +2, -2, HEIGHT) * fractal->zoom)
+	mouse_re = (ft_map(x, -2, 2, WIDTH) * fractal->zoom) + fractal->shift_x;
+	if (ft_strncmp(fractal->name, "burningship", 12) == 0)
+		mouse_im = (ft_map(y, -2, 2, HEIGHT) * fractal->zoom)
 			+ fractal->shift_y;
-		fractal_render(fractal);
+	else
+		mouse_im = (ft_map(y, 2, -2, HEIGHT) * fractal->zoom)
+			+ fractal->shift_y;
+	if (button == Button4)
+		fractal->zoom *= 0.95;
+	else if (button == Button5)
+		fractal->zoom *= 1.05;
+	else
+		return (0);
+	fractal->shift_x = mouse_re - (ft_map(x, -2, 2, WIDTH) * fractal->zoom);
+	if (ft_strncmp(fractal->name, "burningship", 12) == 0)
+		fractal->shift_y = mouse_im - (ft_map(y, -2, 2, HEIGHT)
+				* fractal->zoom);
+	else
+		fractal->shift_y = mouse_im - (ft_map(y, 2, -2, HEIGHT)
+				* fractal->zoom);
+	ft_fractal_render(fractal);
+	return (0);
+}
+
+int	ft_julia_track(int x, int y, t_fractal *fractal)
+{
+	if (ft_strncmp(fractal->name, "julia", 6) == 0)
+	{
+		fractal->julia_x = (ft_map(x, -2, +2, WIDTH) * fractal->zoom)
+			+ fractal->shift_x;
+		fractal->julia_y = (ft_map(y, +2, -2, HEIGHT) * fractal->zoom)
+			+ fractal->shift_y;
+		ft_fractal_render(fractal);
 	}
 	return (0);
 }

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:50:55 by loruzqui          #+#    #+#             */
-/*   Updated: 2024/12/19 11:50:57 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:24:30 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-static void	my_pixel_put(int x, int y, t_img *img, int color)
+static void	ft_my_pixel_put(int x, int y, t_img *img, int color)
 {
 	int	offset;
 
@@ -20,9 +20,9 @@ static void	my_pixel_put(int x, int y, t_img *img, int color)
 	*(unsigned int *)(img->pixels_ptr + offset) = color;
 }
 
-static void	mandel_vs_julia(t_complex *z, t_complex *c, t_fractal *fractal)
+static void	ft_mandel_vs_julia(t_complex *z, t_complex *c, t_fractal *fractal)
 {
-	if (ft_strncmp(fractal->name, "julia", 5) == 0)
+	if (ft_strncmp(fractal->name, "julia", 6) == 0)
 	{
 		c->x = fractal->julia_x;
 		c->y = fractal->julia_y;
@@ -34,38 +34,52 @@ static void	mandel_vs_julia(t_complex *z, t_complex *c, t_fractal *fractal)
 	}
 }
 
+t_complex	ft_handle_constant(int x, int y, t_fractal *fractal)
+{
+	t_complex	z;
+
+	z.x = (ft_map(x, -2, +2, WIDTH) * fractal->zoom) + fractal->shift_x;
+	if (ft_strncmp(fractal->name, "burningship", 12) == 0)
+		z.y = (ft_map(y, -2, +2, HEIGHT) * fractal->zoom) + fractal->shift_y;
+	else
+		z.y = (ft_map(y, +2, -2, HEIGHT) * fractal->zoom) + fractal->shift_y;
+	return (z);
+}
+
 /*
 	MANDELBROT: z = z² + c
 
-	JULIA: z = pixel_point + constante
-	(valores que se le pasan como prámetro al ejecutar e ./fractol julia)
+	JULIA: z = pixel_point + cte
+	(params./fractol julia)
 */
-static void	handle_pixel(int x, int y, t_fractal *fractal)
+static void	ft_handle_pixel(int x, int y, t_fractal *fractal)
 {
-	t_complex	z;
 	t_complex	c;
+	t_complex	z;
 	int			i;
 	int			color;
 
 	i = 0;
-	z.x = (map(x, -2, +2, WIDTH) * fractal->zoom) + fractal->shift_x;
-	z.y = (map(y, +2, -2, HEIGHT) * fractal->zoom) + fractal->shift_y;
-	mandel_vs_julia(&z, &c, fractal);
+	z = ft_handle_constant(x, y, fractal);
+	ft_mandel_vs_julia(&z, &c, fractal);
 	while (i < fractal->iterations_definition)
 	{
-		z = sum_complex(square_complex(z), c);
+		if (ft_strncmp(fractal->name, "burningship", 12) == 0)
+			z = ft_sum_complex(ft_square_complex_abs(z), c);
+		else
+			z = ft_sum_complex(ft_square_complex(z), c);
 		if ((z.x * z.x) + (z.y * z.y) > fractal->escape_value)
 		{
-			color = map(i, PURPLE, BLUE, fractal->iterations_definition);
-			my_pixel_put(x, y, &fractal->img, color);
+			color = ft_handle_color(fractal, i);
+			ft_my_pixel_put(x, y, &fractal->img, color);
 			return ;
 		}
 		i++;
 	}
-	my_pixel_put(x, y, &fractal->img, WHITE);
+	ft_my_pixel_put(x, y, &fractal->img, WHITE);
 }
 
-void	fractal_render(t_fractal *fractal)
+void	ft_fractal_render(t_fractal *fractal)
 {
 	int	x;
 	int	y;
@@ -76,7 +90,7 @@ void	fractal_render(t_fractal *fractal)
 		x = 0;
 		while (x < WIDTH)
 		{
-			handle_pixel(x, y, fractal);
+			ft_handle_pixel(x, y, fractal);
 			x++;
 		}
 		y++;

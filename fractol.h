@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: loruzqui <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: loruzqui <loruzqui@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 11:43:09 by loruzqui          #+#    #+#             */
-/*   Updated: 2024/12/19 11:43:12 by loruzqui         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:27:58 by loruzqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,8 @@
 # include <unistd.h>
 # include <math.h>
 
-// Es para el manejo de ventanas y gráficos
-# include <X11/X.h>
-
-// Es para el manejo de eventos con las teclas
-# include <X11/keysym.h>
+# include <X11/X.h> //window and graphics
+# include <X11/keysym.h> //events keys
 
 # include "minilibx-linux/mlx.h"
 # include "libft/libft.h"
@@ -34,9 +31,10 @@
 # define HEIGHT		800
 
 # define WHITE	0xFFFFFF
-# define PURPLE	0x800080
-# define PINK	0xFFC0CB
-# define BLUE	0x0000FF
+# define PURPLE	0xE6E6FA
+# define PINK	0xFFE4E1
+# define BLUE 0xADD8E6
+# define GREEN 0x98FB98
 
 typedef struct s_complex
 {
@@ -66,18 +64,21 @@ typedef struct s_fractal
 	double	zoom;
 	double	julia_x;
 	double	julia_y;
+	int		color_shift;
 }				t_fractal;
 
-void		fractal_init(t_fractal *fractal);
-void		fractal_render(t_fractal *fractal);
-double		map(double unscaled_num, double new_min, double new_max,
+void		ft_fractal_init(t_fractal *fractal);
+void		ft_fractal_render(t_fractal *fractal);
+double		ft_map(double unscaled_num, double new_min, double new_max,
 				double old_max);
-t_complex	sum_complex(t_complex z1, t_complex z2);
-t_complex	square_complex(t_complex z);
-int			key_handler(int keysym, t_fractal *fractal);
-int			close_handler(t_fractal *fractal);
-int			mouse_handler(int button, int x, int y, t_fractal *fractal);
-int			julia_track(int x, int y, t_fractal *fractal);
-void		malloc_error(void);
+t_complex	ft_sum_complex(t_complex z1, t_complex z2);
+t_complex	ft_square_complex(t_complex z);
+t_complex	ft_square_complex_abs(t_complex z);
+int			ft_key_handler(int keysym, t_fractal *fractal);
+int			ft_close_handler(t_fractal *fractal);
+int			ft_mouse_handler(int button, int x, int y, t_fractal *fractal);
+int			ft_julia_track(int x, int y, t_fractal *fractal);
+void		ft_malloc_error(void);
+int			ft_handle_color(t_fractal *fractal, int i);
 
 #endif
