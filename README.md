@@ -30,6 +30,7 @@ El programa genera fractales en una ventana gráfica y permite al usuario intera
 * `events.c`: Manejo de eventos de teclado, ratón y cierre de ventana.
 * `math_utils.c`: Funciones matemáticas para operaciones con números complejos y mapeo de valores.
 * `aux_malloc.c`: Manejo de errores de asignación de memoria.
+* `color.c`: Manejo del cambio de rango de color.
 * `fractol.h`: Cabecera con definiciones, estructuras y prototipos de funciones.
 * `Makefile`: Compila el proyecto y gestiona reglas como `all`, `clean`, `fclean`, `re`.
 
