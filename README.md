@@ -22,6 +22,12 @@ El programa genera fractales en una ventana gráfica y permite al usuario intera
 * 🎨 **Cambio dinámico de colores:** Al pulsar la barra **espaciadora**, cambia el rango de colores del renderizado.
 * 🖱️ **Zoom inteligente:** El zoom ahora sigue la posición del ratón para una exploración más precisa e intuitiva.
 
+### Imágenes fractales
+
+![Mandelbrot](fractol-mandelbrot.png)
+![Julia](fractol-julia.png)
+![Burningship](fractol-burningship.png)
+
 ### Archivos Incluidos
 
 * `main.c`: Función principal, gestiona la entrada de argumentos y llama a la inicialización.
